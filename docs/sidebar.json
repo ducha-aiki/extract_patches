@@ -1,6 +1,7 @@
 {
   "extract_patches": {
     "Overview": "/",
-    "core": "/core"
+    "core": "/core",
+    "laf": "/laf"
   }
 }
