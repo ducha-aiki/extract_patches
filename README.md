@@ -1,5 +1,5 @@
 # Extract_patches
-> Simple function for local patch extraction from local features keypoints. Accepts following formats:
+> Simple function for local patch extraction from local features keypoints
 
 
 ## Install
@@ -7,6 +7,13 @@
 `pip install extract_patches`
 
 ## How to use
+
+extract_patches accepts following formats:
+
+ - OpenCV keypoints
+ - Ellipse format \[x y a b c\], see further in [Oxford-Affine](http://www.robots.ox.ac.uk/~vgg/research/affine/detectors.html#binaries)
+ - Affine features format [x y a11 a12 a21 a22], see further [here](https://www.vlfeat.org/overview/frame.html) 
+ - OpenCV keypoints + A (a11 a12 a21, a22), say from [AffNet](https://github.com/ducha-aiki/affnet/) output
 
 First, let's delect some local features, e.g. OpenCV ORB.
 
@@ -35,12 +42,12 @@ plt.imshow(vis_img1)
 
 
 
-    <matplotlib.image.AxesImage at 0x7f4f9a65e850>
+    <matplotlib.image.AxesImage at 0x7feb58b46790>
 
 
 
 
-![png](docs/images/output_4_1.png)
+![png](docs/images/output_5_1.png)
 
 
 ```python
@@ -69,11 +76,11 @@ for i in range(1,6):
     plt.imshow(patches[show_idx+i])
 ```
 
-    pyr OpenCV version for 500 kps, [s] 0.027243614196777344
+    pyr OpenCV version for 500 kps, [s] 0.025847196578979492
 
 
 
-![png](docs/images/output_7_1.png)
+![png](docs/images/output_8_1.png)
 
 
 Now try with ellipse (x y a b c) format. Let's download [Hessian-Affine](http://www.robots.ox.ac.uk/~vgg/research/affine/det_eval_files/mikolajczyk_ijcv2004.pdf) from [VGG website](http://www.robots.ox.ac.uk/~vgg/research/affine/detectors.html#binaries) and detect local features with it
@@ -87,16 +94,16 @@ Now try with ellipse (x y a b c) format. Let's download [Hessian-Affine](http://
 !./h_affine.ln  -hesaff -i img/prague.png -o prague.hesaff -thres 100
 ```
 
-    --2020-01-27 15:14:20--  http://www.robots.ox.ac.uk/~vgg/research/affine/det_eval_files/h_affine.ln.gz
+    --2020-01-27 15:21:55--  http://www.robots.ox.ac.uk/~vgg/research/affine/det_eval_files/h_affine.ln.gz
     Resolving www.robots.ox.ac.uk (www.robots.ox.ac.uk)... 129.67.94.2
     Connecting to www.robots.ox.ac.uk (www.robots.ox.ac.uk)|129.67.94.2|:80... connected.
     HTTP request sent, awaiting response... 200 OK
     Length: 3199317 (3.1M) [application/x-gzip]
     Saving to: ‘h_affine.ln.gz’
     
-    h_affine.ln.gz      100%[===================>]   3.05M  3.67MB/s    in 0.8s    
+    h_affine.ln.gz      100%[===================>]   3.05M  1.80MB/s    in 1.7s    
     
-    2020-01-27 15:14:21 (3.67 MB/s) - ‘h_affine.ln.gz’ saved [3199317/3199317]
+    2020-01-27 15:21:56 (1.80 MB/s) - ‘h_affine.ln.gz’ saved [3199317/3199317]
     
     hessian affine  detector...
     cgood 1902 cbad 560 all 2462
@@ -114,7 +121,6 @@ from extract_patches.laf import visualize_LAFs, ells2LAFs
 ells = np.loadtxt('prague.hesaff', skiprows=2).astype(np.float32)
 print (f"Shape is {ells.shape}")
 print (ells[0:5])
-visualize_LAFs(img1, ells2LAFs(ells))
 ```
 
     Shape is (1562, 5)
@@ -131,6 +137,10 @@ Now visualize detected features
 from extract_patches.laf import visualize_LAFs, ells2LAFs
 visualize_LAFs(img1, ells2LAFs(ells))
 ```
+
+
+![png](docs/images/output_14_0.png)
+
 
 And visualize some patches
 
@@ -150,11 +160,11 @@ for i in range(1,6):
 
 ```
 
-    extract from ellipse features for 1500 kps, 0.18859 [s]
+    extract from ellipse features for 1500 kps, 0.24170 [s]
 
 
 
-![png](docs/images/output_15_1.png)
+![png](docs/images/output_16_1.png)
 
 
 Let's try now [MSER](http://cmp.felk.cvut.cz/~matas/papers/matas-bmvc02.pdf) detector, which could output local features in affine format
@@ -166,16 +176,16 @@ Let's try now [MSER](http://cmp.felk.cvut.cz/~matas/papers/matas-bmvc02.pdf) det
 !./mser.ln -i img/prague.png -o prague.mser  -t 4
 ```
 
-    --2020-01-27 15:14:25--  http://www.robots.ox.ac.uk/~vgg/research/affine/det_eval_files/mser.tar.gz
+    --2020-01-27 15:22:05--  http://www.robots.ox.ac.uk/~vgg/research/affine/det_eval_files/mser.tar.gz
     Resolving www.robots.ox.ac.uk (www.robots.ox.ac.uk)... 129.67.94.2
     Connecting to www.robots.ox.ac.uk (www.robots.ox.ac.uk)|129.67.94.2|:80... connected.
     HTTP request sent, awaiting response... 200 OK
     Length: 558415 (545K) [application/x-gzip]
-    Saving to: ‘mser.tar.gz.5’
+    Saving to: ‘mser.tar.gz.6’
     
-    mser.tar.gz.5       100%[===================>] 545.33K  2.44MB/s    in 0.2s    
+    mser.tar.gz.6       100%[===================>] 545.33K  1.66MB/s    in 0.3s    
     
-    2020-01-27 15:14:25 (2.44 MB/s) - ‘mser.tar.gz.5’ saved [558415/558415]
+    2020-01-27 15:22:05 (1.66 MB/s) - ‘mser.tar.gz.6’ saved [558415/558415]
     
 
 
@@ -208,7 +218,7 @@ visualize_LAFs(img1, mser_xyA)
 
 
 
-![png](docs/images/output_19_1.png)
+![png](docs/images/output_20_1.png)
 
 
 ```python
@@ -227,9 +237,9 @@ for i in range(1,6):
     plt.imshow(patches_mser[show_idx+i])
 ```
 
-    extract from a11, a12, a21, a22 features for 360 kps, 0.02449 [s]
+    extract from a11, a12, a21, a22 features for 360 kps, 0.02284 [s]
 
 
 
-![png](docs/images/output_20_1.png)
+![png](docs/images/output_21_1.png)
 
