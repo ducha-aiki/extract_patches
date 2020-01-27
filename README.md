@@ -19,8 +19,9 @@ import math
 import seaborn as sns
 from time import time
 from PIL import Image
+from extract_patches.core import extract_patches
 
-img1 = cv2.cvtColor(cv2.imread('img/prague.png'), cv2.COLOR_BGR2RGB)
+img1 = cv2.cvtColor(cv2.imread('data/img/prague.png'), cv2.COLOR_BGR2RGB)
 
 det = cv2.ORB_create(500)
 kps1, descs1 = det.detectAndCompute(img1,None)
@@ -34,7 +35,7 @@ plt.imshow(vis_img1)
 
 
 
-    <matplotlib.image.AxesImage at 0x7fe2d04d4ed0>
+    <matplotlib.image.AxesImage at 0x7f4f9a65e850>
 
 
 
@@ -47,35 +48,32 @@ from extract_patches.core import extract_patches
 ```
 
 extract_patches performs extraction from the appropriate level of image pyramid, removing high freq artifacts. 
-Border mode is set to "replicate", so the patch don't have crazy black borders
+Border mode is set to "replicate", so the patch don't have crazy black borders.
+
+**PATCH_SIZE** is output patch size.
+
+**mrSize** is a scale coefficient, related to the image area covered in the original image by local feature.
+There are different conventions (if any common), e.g. for ORB is mrSize is recommend to set to 1.0, as kpt.size already contains correct number. For the OpenCV SIFT, on the other hand, one should use mrSize=6.0
 
 ```python
-show_idx = 300
 PATCH_SIZE = 65
-mrSize = 5.0
+mrSize = 1.0
 t=time()
 patches = extract_patches(kps1, img1, PATCH_SIZE, mrSize, 'cv2')
 print ('pyr OpenCV version for 500 kps, [s]', time()-t)
-print (kps1[0])
 
-fig = plt.figure(figsize=(12, 16))
-fig.add_subplot(1, 3, 1) 
-plt.imshow(patches[show_idx])
+show_idx = 300
+fig = plt.figure(figsize=(12, 20))
+for i in range(1,6):
+    fig.add_subplot(1, 5, i) 
+    plt.imshow(patches[show_idx+i])
 ```
 
-    pyr OpenCV version for 500 kps, [s] 0.026546239852905273
-    <KeyPoint 0x7fe3080a0300>
+    pyr OpenCV version for 500 kps, [s] 0.027243614196777344
 
 
 
-
-
-    <matplotlib.image.AxesImage at 0x7fe2d0405810>
-
-
-
-
-![png](docs/images/output_7_2.png)
+![png](docs/images/output_7_1.png)
 
 
 Now try with ellipse (x y a b c) format. Let's download [Hessian-Affine](http://www.robots.ox.ac.uk/~vgg/research/affine/det_eval_files/mikolajczyk_ijcv2004.pdf) from [VGG website](http://www.robots.ox.ac.uk/~vgg/research/affine/detectors.html#binaries) and detect local features with it
@@ -89,40 +87,34 @@ Now try with ellipse (x y a b c) format. Let's download [Hessian-Affine](http://
 !./h_affine.ln  -hesaff -i img/prague.png -o prague.hesaff -thres 100
 ```
 
-    --2020-01-27 13:46:31--  http://www.robots.ox.ac.uk/~vgg/research/affine/det_eval_files/h_affine.ln.gz
+    --2020-01-27 15:14:20--  http://www.robots.ox.ac.uk/~vgg/research/affine/det_eval_files/h_affine.ln.gz
     Resolving www.robots.ox.ac.uk (www.robots.ox.ac.uk)... 129.67.94.2
     Connecting to www.robots.ox.ac.uk (www.robots.ox.ac.uk)|129.67.94.2|:80... connected.
     HTTP request sent, awaiting response... 200 OK
     Length: 3199317 (3.1M) [application/x-gzip]
     Saving to: ‘h_affine.ln.gz’
     
-    h_affine.ln.gz      100%[===================>]   3.05M  2.43MB/s    in 1.3s    
+    h_affine.ln.gz      100%[===================>]   3.05M  3.67MB/s    in 0.8s    
     
-    2020-01-27 13:46:32 (2.43 MB/s) - ‘h_affine.ln.gz’ saved [3199317/3199317]
+    2020-01-27 15:14:21 (3.67 MB/s) - ‘h_affine.ln.gz’ saved [3199317/3199317]
     
     hessian affine  detector...
     cgood 1902 cbad 560 all 2462
     cor nb 1679
-    detection time: 0.433333
+    detection time: 0.4
     
     number of points : 1562
     output file: prague.hesaff
 
 
-Now read extracted local features from txt file and extract corresponding patches
+Now read extracted local features from txt file
 
 ```python
+from extract_patches.laf import visualize_LAFs, ells2LAFs
 ells = np.loadtxt('prague.hesaff', skiprows=2).astype(np.float32)
 print (f"Shape is {ells.shape}")
 print (ells[0:5])
-t=time()
-patches_ells = extract_patches(ells, img1, PATCH_SIZE, mrSize, 'ellipse')
-el=time()-t
-print (f'extract from ellipse features for 1500 kps, {el:.5f} [s]', )
-
-fig = plt.figure(figsize=(12, 16))
-fig.add_subplot(1, 3, 1) 
-plt.imshow(patches_ells[1000])
+visualize_LAFs(img1, ells2LAFs(ells))
 ```
 
     Shape is (1562, 5)
@@ -131,18 +123,38 @@ plt.imshow(patches_ells[1000])
      [ 6.78240e+02  1.92960e+02  1.07543e-01 -2.07333e-02  3.04518e-02]
      [ 4.14720e+02  1.98720e+02  3.24049e-02 -3.11269e-03  7.01242e-02]
      [ 5.68800e+02  2.00160e+02  2.22278e-02  3.34806e-02  1.39287e-01]]
-    extract from ellipse features for 1500 kps, 0.18389 [s]
+
+
+Now visualize detected features
+
+```python
+from extract_patches.laf import visualize_LAFs, ells2LAFs
+visualize_LAFs(img1, ells2LAFs(ells))
+```
+
+And visualize some patches
+
+```python
+show_idx=1500
+PATCH_SIZE = 65
+mrSize = 5.0
+
+t=time()
+patches_ells = extract_patches(ells, img1, PATCH_SIZE, mrSize, 'ellipse')
+el=time()-t
+print (f'extract from ellipse features for 1500 kps, {el:.5f} [s]', )
+fig = plt.figure(figsize=(14, 20))
+for i in range(1,6):
+    fig.add_subplot(1, 5, i) 
+    plt.imshow(patches_ells[show_idx+i])
+
+```
+
+    extract from ellipse features for 1500 kps, 0.18859 [s]
 
 
 
-
-
-    <matplotlib.image.AxesImage at 0x7fe2d0140e90>
-
-
-
-
-![png](docs/images/output_11_2.png)
+![png](docs/images/output_15_1.png)
 
 
 Let's try now [MSER](http://cmp.felk.cvut.cz/~matas/papers/matas-bmvc02.pdf) detector, which could output local features in affine format
@@ -154,16 +166,16 @@ Let's try now [MSER](http://cmp.felk.cvut.cz/~matas/papers/matas-bmvc02.pdf) det
 !./mser.ln -i img/prague.png -o prague.mser  -t 4
 ```
 
-    --2020-01-27 13:46:34--  http://www.robots.ox.ac.uk/~vgg/research/affine/det_eval_files/mser.tar.gz
+    --2020-01-27 15:14:25--  http://www.robots.ox.ac.uk/~vgg/research/affine/det_eval_files/mser.tar.gz
     Resolving www.robots.ox.ac.uk (www.robots.ox.ac.uk)... 129.67.94.2
     Connecting to www.robots.ox.ac.uk (www.robots.ox.ac.uk)|129.67.94.2|:80... connected.
     HTTP request sent, awaiting response... 200 OK
     Length: 558415 (545K) [application/x-gzip]
-    Saving to: ‘mser.tar.gz.1’
+    Saving to: ‘mser.tar.gz.5’
     
-    mser.tar.gz.1       100%[===================>] 545.33K  2.13MB/s    in 0.2s    
+    mser.tar.gz.5       100%[===================>] 545.33K  2.44MB/s    in 0.2s    
     
-    2020-01-27 13:46:34 (2.13 MB/s) - ‘mser.tar.gz.1’ saved [558415/558415]
+    2020-01-27 15:14:25 (2.44 MB/s) - ‘mser.tar.gz.5’ saved [558415/558415]
     
 
 
@@ -184,6 +196,7 @@ def read_mser_file(fname):
 mser_xyA = read_mser_file('prague.mser')
 print (f"Shape is {mser_xyA.shape}")
 print (mser_xyA[0:5])
+visualize_LAFs(img1, mser_xyA)
 ```
 
     Shape is (361, 6)
@@ -194,27 +207,29 @@ print (mser_xyA[0:5])
      [651.968    344.841     15.5017     1.13132    1.13132    3.68829 ]]
 
 
+
+![png](docs/images/output_19_1.png)
+
+
 ```python
+PATCH_SIZE = 65
+mrSize = 5.0
+
 t=time()
 patches_mser = extract_patches(mser_xyA, img1, PATCH_SIZE, mrSize, 'xyA')
 el = time()-t
 print (f'extract from a11, a12, a21, a22 features for 360 kps, {el:.5f} [s]')
 
-fig = plt.figure(figsize=(12, 16))
-fig.add_subplot(1, 3, 1) 
-plt.imshow(patches_mser[153])
+show_idx=150
+fig = plt.figure(figsize=(14, 20))
+for i in range(1,6):
+    fig.add_subplot(1, 5, i) 
+    plt.imshow(patches_mser[show_idx+i])
 ```
 
-    extract from a11, a12, a21, a22 features for 360 kps, 0.05567 [s]
+    extract from a11, a12, a21, a22 features for 360 kps, 0.02449 [s]
 
 
 
-
-
-    <matplotlib.image.AxesImage at 0x7fe2d00dde90>
-
-
-
-
-![png](docs/images/output_16_2.png)
+![png](docs/images/output_20_1.png)
 
