@@ -17,7 +17,7 @@ extract_patches accepts following formats:
 
 First, let's delect some local features, e.g. OpenCV ORB.
 
-```python
+```
 %matplotlib inline
 import matplotlib.pyplot as plt
 import numpy as np
@@ -50,7 +50,7 @@ plt.imshow(vis_img1)
 ![png](docs/images/output_5_1.png)
 
 
-```python
+```
 from extract_patches.core import extract_patches
 ```
 
@@ -62,7 +62,7 @@ Border mode is set to "replicate", so the patch don't have crazy black borders.
 **mrSize** is a scale coefficient, related to the image area covered in the original image by local feature.
 There are different conventions (if any common), e.g. for ORB is mrSize is recommend to set to 1.0, as kpt.size already contains correct number. For the OpenCV SIFT, on the other hand, one should use mrSize=6.0
 
-```python
+```
 PATCH_SIZE = 65
 mrSize = 1.0
 t=time()
@@ -86,7 +86,7 @@ for i in range(1,6):
 Now try with ellipse (x y a b c) format. Let's download [Hessian-Affine](http://www.robots.ox.ac.uk/~vgg/research/affine/det_eval_files/mikolajczyk_ijcv2004.pdf) from [VGG website](http://www.robots.ox.ac.uk/~vgg/research/affine/detectors.html#binaries) and detect local features with it
 
 
-```python
+```
 !rm h_affine.ln
 !wget http://www.robots.ox.ac.uk/~vgg/research/affine/det_eval_files/h_affine.ln.gz
 !gunzip h_affine.ln.gz
@@ -116,7 +116,7 @@ Now try with ellipse (x y a b c) format. Let's download [Hessian-Affine](http://
 
 Now read extracted local features from txt file
 
-```python
+```
 from extract_patches.laf import visualize_LAFs, ells2LAFs
 ells = np.loadtxt('prague.hesaff', skiprows=2).astype(np.float32)
 print (f"Shape is {ells.shape}")
@@ -133,7 +133,7 @@ print (ells[0:5])
 
 Now visualize detected features
 
-```python
+```
 from extract_patches.laf import visualize_LAFs, ells2LAFs
 visualize_LAFs(img1, ells2LAFs(ells))
 ```
@@ -144,7 +144,7 @@ visualize_LAFs(img1, ells2LAFs(ells))
 
 And visualize some patches
 
-```python
+```
 show_idx=1500
 PATCH_SIZE = 65
 mrSize = 5.0
@@ -169,7 +169,7 @@ for i in range(1,6):
 
 Let's try now [MSER](http://cmp.felk.cvut.cz/~matas/papers/matas-bmvc02.pdf) detector, which could output local features in affine format
 
-```python
+```
 #And lets try x y a11 a12 a21 a22 format. MSER can output in it
 !wget http://www.robots.ox.ac.uk/~vgg/research/affine/det_eval_files/mser.tar.gz
 !tar -xf mser.tar.gz
@@ -191,7 +191,7 @@ Let's try now [MSER](http://cmp.felk.cvut.cz/~matas/papers/matas-bmvc02.pdf) det
 
 Read and extract from MSERs 
 
-```python
+```
 def read_mser_file(fname):
     with open(fname, 'r') as f:
         out = []
@@ -221,7 +221,7 @@ visualize_LAFs(img1, mser_xyA)
 ![png](docs/images/output_20_1.png)
 
 
-```python
+```
 PATCH_SIZE = 65
 mrSize = 5.0
 
