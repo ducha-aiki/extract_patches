@@ -2,10 +2,13 @@
 
 title: core
 
+
 keywords: fastai
 sidebar: home_sidebar
 
 summary: "This module contains the functions to extract local feature patches"
+description: "This module contains the functions to extract local feature patches"
+nb_path: "nbs/core.ipynb"
 ---
 <!--
 
@@ -18,13 +21,16 @@ summary: "This module contains the functions to extract local feature patches"
 -->
 
 <div class="container" id="notebook-container">
+        
+    {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
 
 </div>
-<div class="cell border-box-sizing code_cell rendered">
+    {% endraw %}
 
-</div>
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -34,20 +40,20 @@ summary: "This module contains the functions to extract local feature patches"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="extract_patches" class="doc_header"><code>extract_patches</code><a href="__main__.py#L8" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>extract_patches</code>(<strong><code>kpts</code></strong>:<code>Union</code>[<code>List</code>[<code>T</code>], <code>array</code>], <strong><code>img</code></strong>:<code>array</code>, <strong><code>PS</code></strong>:<code>int</code>=<em><code>32</code></em>, <strong><code>mag_factor</code></strong>:<code>float</code>=<em><code>10.0</code></em>, <strong><code>input_format</code></strong>:<code>str</code>=<em><code>'cv2'</code></em>)</p>
+<h4 id="extract_patches" class="doc_header"><code>extract_patches</code><a href="https://github.com/ducha-aiki/extract_patches/tree/master/extract_patches/core.py#L13" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>extract_patches</code>(<strong><code>kpts</code></strong>:<code>Union</code>[<code>List</code>[<code>T</code>], <code>array</code>], <strong><code>img</code></strong>:<code>array</code>, <strong><code>PS</code></strong>:<code>int</code>=<em><code>32</code></em>, <strong><code>mag_factor</code></strong>:<code>float</code>=<em><code>10.0</code></em>, <strong><code>input_format</code></strong>:<code>str</code>=<em><code>'cv2'</code></em>)</p>
 </blockquote>
 <p>Extracts patches given the keypoints in the one of the following formats:</p>
 <ul>
 <li>cv2: list of cv2 keypoints</li>
 <li>cv2+A: tuple of (list of cv2 keypoints, Nx2x2 np array)</li>
-<li>ellipse: Nx5 np array, single row is [x y a b c] </li>
-<li>xyA: Nx6 np array, single row is [x y a11 a12 a21 a22] </li>
-<li>LAF: Nx2x3 np array, single row is [a11 a12 x; a21 a22 y] 
-Returns list of patches.
-Upgraded version of
-mag_factor is a scale coefficient. Use 10 for extracting OpenCV SIFT patches, 1.0 for OpenCV ORB patches, etc 
-PS is the output patch size in pixels</li>
+<li>ellipse: Nx5 np array, single row is [x y a b c]</li>
+<li>xyA: Nx6 np array, single row is [x y a11 a12 a21 a22]</li>
+<li>LAF: Nx2x3 or 1xNx2x3 np array, single row is [a11 a12 x; a21 a22 y]</li>
 </ul>
+<p>Returns list of patches.
+Upgraded version of
+mag_factor is a scale coefficient. Use 10 for extracting OpenCV SIFT patches, 1.0 for OpenCV ORB patches, etc
+PS is the output patch size in pixels</p>
 <p>Output is list of np.arrays with shape = [ch, PS, PS], where ch is original image #channels</p>
 
 </div>
@@ -58,6 +64,10 @@ PS is the output patch size in pixels</li>
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -67,7 +77,7 @@ PS is the output patch size in pixels</li>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="build_image_pyramid" class="doc_header"><code>build_image_pyramid</code><a href="__main__.py#L47" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>build_image_pyramid</code>(<strong><code>img</code></strong>:<code>array</code>, <strong><code>min_size</code></strong>:<code>int</code>)</p>
+<h4 id="build_image_pyramid" class="doc_header"><code>build_image_pyramid</code><a href="https://github.com/ducha-aiki/extract_patches/tree/master/extract_patches/core.py#L60" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>build_image_pyramid</code>(<strong><code>img</code></strong>:<code>array</code>, <strong><code>min_size</code></strong>:<code>int</code>)</p>
 </blockquote>
 <p>Builds image pyramid up until min_size pixel size</p>
 
@@ -79,6 +89,10 @@ PS is the output patch size in pixels</li>
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -88,12 +102,12 @@ PS is the output patch size in pixels</li>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="extract_patches_Ms" class="doc_header"><code>extract_patches_Ms</code><a href="__main__.py#L58" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>extract_patches_Ms</code>(<strong><code>Ms</code></strong>:<code>List</code>[<code>array</code>], <strong><code>img</code></strong>:<code>array</code>, <strong><code>pyr_idxs</code></strong>:<code>List</code>[<code>int</code>]=<em><code>[]</code></em>, <strong><code>PS</code></strong>:<code>int</code>=<em><code>32</code></em>)</p>
+<h4 id="extract_patches_Ms" class="doc_header"><code>extract_patches_Ms</code><a href="https://github.com/ducha-aiki/extract_patches/tree/master/extract_patches/core.py#L71" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>extract_patches_Ms</code>(<strong><code>Ms</code></strong>:<code>List</code>[<code>array</code>], <strong><code>img</code></strong>:<code>array</code>, <strong><code>pyr_idxs</code></strong>:<code>List</code>[<code>int</code>]=<em><code>[]</code></em>, <strong><code>PS</code></strong>:<code>int</code>=<em><code>32</code></em>)</p>
 </blockquote>
 <p>Builds image pyramid and rectifies patches around keypoints
-in the tranformation matrix format 
-from the appropriate level of image pyramid, 
-removing high freq artifacts. Border mode is set to "replicate", 
+in the tranformation matrix format
+from the appropriate level of image pyramid,
+removing high freq artifacts. Border mode is set to "replicate",
 so the boundary patches don`t have crazy black borders
 Returns list of patches.
 Upgraded version of
@@ -107,6 +121,10 @@ Upgraded version of
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -116,7 +134,7 @@ Upgraded version of
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="convert_cv2_keypoints" class="doc_header"><code>convert_cv2_keypoints</code><a href="__main__.py#L80" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>convert_cv2_keypoints</code>(<strong><code>kps</code></strong>:<code>List</code>[<code>T</code>], <strong><code>PS</code></strong>:<code>int</code>, <strong><code>mag_factor</code></strong>:<code>float</code>)</p>
+<h4 id="convert_cv2_keypoints" class="doc_header"><code>convert_cv2_keypoints</code><a href="https://github.com/ducha-aiki/extract_patches/tree/master/extract_patches/core.py#L94" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>convert_cv2_keypoints</code>(<strong><code>kps</code></strong>:<code>List</code>[<code>T</code>], <strong><code>PS</code></strong>:<code>int</code>, <strong><code>mag_factor</code></strong>:<code>float</code>)</p>
 </blockquote>
 <p>Converts OpenCV keypoints into transformation matrix
 and pyramid index to extract from for the patch extraction</p>
@@ -129,6 +147,10 @@ and pyramid index to extract from for the patch extraction</p>
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -138,9 +160,9 @@ and pyramid index to extract from for the patch extraction</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="convert_cv2_plus_A_keypoints" class="doc_header"><code>convert_cv2_plus_A_keypoints</code><a href="__main__.py#L104" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>convert_cv2_plus_A_keypoints</code>(<strong><code>kps</code></strong>:<code>List</code>[<code>T</code>], <strong><code>A</code></strong>:<code>array</code>, <strong><code>PS</code></strong>:<code>int</code>, <strong><code>mag_factor</code></strong>:<code>float</code>)</p>
+<h4 id="convert_cv2_plus_A_keypoints" class="doc_header"><code>convert_cv2_plus_A_keypoints</code><a href="https://github.com/ducha-aiki/extract_patches/tree/master/extract_patches/core.py#L118" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>convert_cv2_plus_A_keypoints</code>(<strong><code>kps</code></strong>:<code>List</code>[<code>T</code>], <strong><code>A</code></strong>:<code>array</code>, <strong><code>PS</code></strong>:<code>int</code>, <strong><code>mag_factor</code></strong>:<code>float</code>)</p>
 </blockquote>
-<p>Converts OpenCV keypoints + A [n x 2 x 2] affine shape 
+<p>Converts OpenCV keypoints + A [n x 2 x 2] affine shape
 into transformation matrix
 and pyramid index to extract from for the patch extraction</p>
 
@@ -152,6 +174,10 @@ and pyramid index to extract from for the patch extraction</p>
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
@@ -161,9 +187,9 @@ and pyramid index to extract from for the patch extraction</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="convert_xyA" class="doc_header"><code>convert_xyA</code><a href="__main__.py#L134" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>convert_xyA</code>(<strong><code>kps</code></strong>:<code>List</code>[<code>T</code>], <strong><code>PS</code></strong>:<code>int</code>, <strong><code>mag_factor</code></strong>:<code>float</code>)</p>
+<h4 id="convert_xyA" class="doc_header"><code>convert_xyA</code><a href="https://github.com/ducha-aiki/extract_patches/tree/master/extract_patches/core.py#L148" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>convert_xyA</code>(<strong><code>kps</code></strong>:<code>List</code>[<code>T</code>], <strong><code>PS</code></strong>:<code>int</code>, <strong><code>mag_factor</code></strong>:<code>float</code>)</p>
 </blockquote>
-<p>Converts n x [x y a11 a12 a21 a22] affine regions<br>
+<p>Converts n x [x y a11 a12 a21 a22] affine regions
 into transformation matrix
 and pyramid index to extract from for the patch extraction</p>
 
@@ -175,12 +201,23 @@ and pyramid index to extract from for the patch extraction</p>
 </div>
 
 </div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">nbdev.export</span> <span class="k">import</span> <span class="o">*</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">nbdev.export</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="n">notebook2script</span><span class="p">()</span>
 </pre></div>
 
@@ -205,6 +242,8 @@ Converted laf.ipynb.
 </div>
 
 </div>
+    {% endraw %}
+
 </div>
  
 

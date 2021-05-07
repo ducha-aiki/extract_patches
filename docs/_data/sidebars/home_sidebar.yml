@@ -11,10 +11,10 @@ entries:
       url: /
     - output: web,pdf
       title: core
-      url: /core
+      url: core.html
     - output: web,pdf
       title: laf
-      url: /laf
+      url: laf.html
     output: web
     title: extract_patches
   output: web
