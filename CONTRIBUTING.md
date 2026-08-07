@@ -35,4 +35,7 @@ examples and documentation, not the package build source.
 
 ## Do you want to contribute to the documentation?
 
-* Docs are automatically created from the notebooks in the nbs folder.
+* Docs are rendered from the notebooks in the `nbs` folder by the Docs GitHub
+  Actions workflow and published to GitHub Pages on every push to `master`.
+  Edit the notebooks (including their saved outputs — they are not re-executed
+  during the docs build) and the site updates automatically.

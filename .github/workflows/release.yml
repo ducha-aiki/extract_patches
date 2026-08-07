@@ -20,7 +20,7 @@ jobs:
       - name: Verify release tag
         env:
           RELEASE_TAG: ${{ github.event.release.tag_name }}
-        run: test "${RELEASE_TAG#v}" = "$(python setup.py --version)"
+        run: test "${RELEASE_TAG#v}" = "$(python -c 'import extract_patches; print(extract_patches.__version__)')"
       - name: Test release source
         run: |
           python -m pip install --upgrade build
