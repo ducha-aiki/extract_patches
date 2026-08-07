@@ -1,0 +1,32 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: pypi
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify release tag
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: test "${RELEASE_TAG#v}" = "$(python setup.py --version)"
+      - name: Test release source
+        run: |
+          python -m pip install --upgrade build
+          python -m pip install "numpy==2.3.5" "opencv-python-headless==5.0.0.93" "matplotlib>=3.7" pytest
+          python -m pip install --no-deps -e .
+          pytest -q
+      - run: python -m build
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1

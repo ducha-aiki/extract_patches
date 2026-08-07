@@ -1,23 +1,15 @@
-SRC = $(wildcard nbs/*.ipynb)
+.PHONY: all test dist clean
 
-all: extract_patches docs
+PYTHON ?= python3
 
-extract_patches: $(SRC)
-	nbdev_build_lib
-	touch extract_patches
-
-docs: $(SRC)
-	nbdev_build_docs
-	touch docs
+all: test dist
 
 test:
-	nbdev_test_nbs
-
-pypi: dist
-	twine upload --repository pypi dist/*
+	$(PYTHON) -m pytest -q
 
 dist: clean
-	python setup.py sdist bdist_wheel
+	$(PYTHON) -m build
+	$(PYTHON) -m twine check dist/*
 
 clean:
-	rm -rf dist
+	rm -rf build dist *.egg-info
