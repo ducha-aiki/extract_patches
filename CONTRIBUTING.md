@@ -2,10 +2,16 @@
 
 ## How to get started
 
-Before anything else, please install the git hooks that run automatic scripts during each commit and merge to strip the notebooks of superfluous metadata (and avoid merge conflicts). After cloning the repository, run the following command inside it:
+Create a virtual environment, install the project in editable mode, and install
+the development tools before making changes:
+
+```bash
+python -m pip install -e . pytest build twine
 ```
-nbdev_install_git_hooks
-```
+
+Run `make test` for the regression suite and `make dist` to verify the source and
+wheel artifacts. Runtime code lives in `extract_patches/`; the notebooks are
+examples and documentation, not the package build source.
 
 ## Did you find a bug?
 
@@ -29,5 +35,7 @@ nbdev_install_git_hooks
 
 ## Do you want to contribute to the documentation?
 
-* Docs are automatically created from the notebooks in the nbs folder.
-
+* Docs are rendered from the notebooks in the `nbs` folder by the Docs GitHub
+  Actions workflow and published to GitHub Pages on every push to `master`.
+  Edit the notebooks (including their saved outputs — they are not re-executed
+  during the docs build) and the site updates automatically.

@@ -1,0 +1,62 @@
+name: Docs
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "nbs/**"
+      - ".github/workflows/docs.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install nbconvert
+      - name: Render notebooks
+        run: |
+          mkdir -p _site
+          jupyter nbconvert --to html nbs/index.ipynb --output-dir _site --output index.html
+          jupyter nbconvert --to html nbs/core.ipynb --output-dir _site --output core.html
+          jupyter nbconvert --to html nbs/laf.ipynb --output-dir _site --output laf.html
+      - name: Add navigation links
+        run: |
+          python - <<'EOF'
+          import pathlib, re
+          nav = ('<nav style="padding:0.6em 1em;border-bottom:1px solid #ddd;'
+                 'font-family:sans-serif">'
+                 '<a href="index.html">extract_patches</a> &middot; '
+                 '<a href="core.html">core</a> &middot; '
+                 '<a href="laf.html">laf</a> &middot; '
+                 '<a href="https://github.com/ducha-aiki/extract_patches">GitHub</a>'
+                 '</nav>')
+          for page in pathlib.Path("_site").glob("*.html"):
+              html = page.read_text(encoding="utf-8")
+              html, n = re.subn(r"(<body[^>]*>)", r"\1" + nav, html, count=1)
+              assert n == 1, f"no <body> tag found in {page}"
+              page.write_text(html, encoding="utf-8")
+          EOF
+      - uses: actions/upload-pages-artifact@v3
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
